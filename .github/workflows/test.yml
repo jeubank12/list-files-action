@@ -19,13 +19,13 @@ jobs:
     steps:
       - name: List Files
         id: list-files
-        uses: mirko-felice/list-files-action@master
+        uses: jeubank12/list-files-action@master
         with:
           repo: ${{ github.repository }}
           ref: ${{ github.ref }}
           path: "."
           ext: ".yml"
-  Test:
+  test-list-files:
     needs: list-files
     strategy:
       matrix:
@@ -35,9 +35,33 @@ jobs:
       - name: Output results
         run: |
           echo ${{ matrix.paths }}
+  list-files-deep:
+    runs-on: ubuntu-latest
+    outputs:
+      paths: ${{ steps.list-files.outputs.paths }}
+    steps:
+      - name: List Files
+        id: list-files
+        uses: jeubank12/list-files-action@master
+        with:
+          repo: ${{ github.repository }}
+          ref: ${{ github.ref }}
+          path: ".github"
+          ext: ".yml"
+  test-list-files-deep:
+    needs: list-files-deep
+    strategy:
+      matrix:
+        paths: ${{ fromJson(needs.list-files-deep.outputs.paths) }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Output results
+        run: |
+          echo ${{ matrix.paths }}
   Release:
-    if: github.ref_name == 'master'
-    needs: Test
+    if: false
+    # github.ref_name == 'master'
+    needs: [test-list-files, test-list-files-deep]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
