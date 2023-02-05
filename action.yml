@@ -1,6 +1,6 @@
 name: 'List Files Action'
 description: 'List all matching files in specific path.'
-author: "Mirko Felice"
+author: "Mirko Felice, Josiah Eubank"
 
 inputs:
   repo:
@@ -9,6 +9,10 @@ inputs:
   ref:
     description: "Branch or tag to checkout"
     default: "master"
+    required: false
+  base-dir:
+    description: "Base directory for all paths"
+    default: "."
     required: false
   path:
     description: "Path where searching files"
@@ -36,6 +40,7 @@ runs:
     - shell: bash
       id: py
       name: Execute Python
+      working-directory: ${{ inputs.base-dir }}
       env:
         INPUT_PATH: ${{ inputs.path }}
         INPUT_EXT: ${{ inputs.ext }}
