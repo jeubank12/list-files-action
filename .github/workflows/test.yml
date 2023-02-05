@@ -46,7 +46,8 @@ jobs:
         with:
           repo: ${{ github.repository }}
           ref: ${{ github.ref }}
-          path: ".github"
+          base-dir: ".github"
+          path: "."
           ext: ".yml"
   test-list-files-deep:
     needs: list-files-deep
